@@ -1,0 +1,84 @@
+{
+  "intents": [
+    {
+      "question": "Hi",
+      "response": "Hello! How can I assist you today?"
+    },
+    {
+      "question": "What is AI?",
+      "response": "Artificial Intelligence (AI) is the simulation of human intelligence in machines that are programmed to think, learn, and make decisions."
+    },
+    {
+      "question": "What is ML?",
+      "response": "Machine Learning (ML) is a subset of AI that involves training algorithms to learn patterns from data and make predictions or decisions without explicit programming."
+    },
+    {
+      "question": "What is DL?",
+      "response": "Deep Learning (DL) is a subset of ML that uses neural networks with many layers to process and learn from large datasets."
+    },
+    {
+      "question": "What is NLP?",
+      "response": "Natural Language Processing (NLP) is a field of AI that focuses on the interaction between computers and human language, enabling machines to understand, interpret, and respond to text or speech."
+    },
+    {
+      "question": "What is a chatbot?",
+      "response": "A chatbot is an AI-powered tool designed to simulate human-like conversations, often used for customer support, information retrieval, or personal assistants."
+    },
+    {
+      "question": "How are AI and chatbots related?",
+      "response": "Chatbots leverage AI techniques like NLP to understand and respond to user queries, making them more interactive and intelligent."
+    },
+    {
+      "question": "What are neural networks?",
+      "response": "Neural networks are a core component of Deep Learning, inspired by the human brain, consisting of layers of nodes (neurons) that process data to identify patterns."
+    },
+    {
+      "question": "What is supervised learning?",
+      "response": "Supervised learning is a type of ML where a model is trained on labeled data, learning to predict outputs from inputs."
+    },
+    {
+      "question": "What is unsupervised learning?",
+      "response": "Unsupervised learning is a type of ML where the model learns patterns and structures from unlabeled data."
+    },
+    {
+      "question": "What technologies are used in chatbot development?",
+      "response": "Chatbots are built using NLP libraries like NLTK, SpaCy, or Hugging Face, and frameworks like TensorFlow, PyTorch, or Rasa."
+    },
+    {
+      "question": "What is sentiment analysis?",
+      "response": "Sentiment analysis is an NLP task where a model determines the sentiment (positive, negative, or neutral) of a given text."
+    },
+    {
+      "question": "Can AI improve chatbots?",
+      "response": "Yes, AI enhances chatbots by making them smarter, more context-aware, and capable of understanding complex queries using advanced NLP techniques."
+    },
+    {
+      "question": "What is reinforcement learning?",
+      "response": "Reinforcement learning is a type of ML where an agent learns to make decisions by interacting with an environment and receiving feedback as rewards or penalties."
+    },
+    {
+      "question": "What is transfer learning?",
+      "response": "Transfer learning involves using a pre-trained model on a new, similar task, which speeds up training and improves performance."
+    },
+    {
+      "question": "What is a conversational AI?",
+      "response": "Conversational AI refers to systems, like chatbots or virtual assistants, that use NLP and ML to carry on natural and meaningful conversations with users."
+    },
+    {
+      "question": "What is Rasa?",
+      "response": "Rasa is an open-source framework for building AI-powered chatbots using natural language understanding (NLU) and dialogue management."
+    },
+    {
+      "question": "What is BERT?",
+      "response": "BERT (Bidirectional Encoder Representations from Transformers) is a state-of-the-art NLP model developed by Google for understanding context in text."
+    },
+    {
+      "question": "What is GPT?",
+      "response": "GPT (Generative Pre-trained Transformer) is a family of language models developed by OpenAI, known for generating human-like text."
+    },
+    {
+      "question": "What is the future of chatbots?",
+      "response": "The future of chatbots involves greater integration with advanced AI, enabling deeper contextual understanding, emotional intelligence, and multitasking capabilities."
+    }
+  ]
+}
