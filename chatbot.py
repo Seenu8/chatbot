@@ -11,10 +11,10 @@ import json
 nltk.download('punkt')
 
 # read file
-with open("C:\python\AI\intents.json", 'r') as file:
+with open("C:\python\python\AI\intents.json", 'r') as file:
     data = json.load(file)
 
-# separate QA 
+# separate QA
 questions = []
 responses = []
 for intent in data["intents"]:
@@ -70,3 +70,87 @@ while True:
         print(f"Bot: {response}")
 
 
+#
+# import mysql.connector
+# import spacy
+# from transformers import pipeline
+#
+# # Load NLP model for entity recognition
+# nlp = spacy.load("en_core_web_sm")
+# qa_pipeline = pipeline("question-answering", model="distilbert-base-uncased")
+#
+# # Connect to MySQL database
+# db = mysql.connector.connect(
+#     host="localhost",
+#     user="root",
+#     password="root",
+#     database="printer_management"
+# )
+#
+# cursor = db.cursor()
+#
+#
+# def extract_entities(user_input):
+#     """ Extracts relevant entities from the user's input """
+#     doc = nlp(user_input)
+#     entities = [ent.text for ent in doc.ents]
+#     return entities
+#
+#
+# def get_printer_details(printer_name):
+#     conn = mysql.connector.connect(
+#         host="localhost",
+#         user="root",
+#         password="password",
+#         database="printers_db"
+#     )
+#     cursor = conn.cursor()
+#
+#     # Ensure you're using the correct column name
+#     query = "SELECT printer_name, status FROM printers WHERE printer_name LIKE %s"
+#     cursor.execute(query, (f"%{printer_name}%",))
+#
+#     result = cursor.fetchone()
+#     conn.close()
+#
+#     if result:
+#         return f"Printer: {result[0]}, Status: {result[1]}"
+#     else:
+#         return "Printer not found."
+#
+#
+# def chatbot():
+#     print("Chatbot: Hello! Ask me about printers. Type 'exit' to quit.")
+#
+#     while True:
+#         user_input = input("You: ")
+#         if user_input.lower() == "exit":
+#             print("Chatbot: Goodbye!")
+#             break
+#
+#         # Extract key entities
+#         entities = extract_entities(user_input)
+#         if entities:
+#             printer_name = entities[0]  # Assume first entity is the printer name
+#             details = get_printer_details(printer_name)
+#
+#             if details:
+#                 response_text = f"Printer Details:\n"
+#                 for name, model, status in details:
+#                     response_text += f"- {name} (Model: {model}, Status: {status})\n"
+#             else:
+#                 response_text = "Sorry, no details found for that printer."
+#
+#         else:
+#             response_text = "Could you clarify which printer you're asking about?"
+#
+#         # Make response more conversational using Hugging Face
+#         response = qa_pipeline({
+#             "question": user_input,
+#             "context": response_text
+#         })
+#
+#         print(f"Chatbot: {response['answer']}")
+#
+#
+# chatbot()
