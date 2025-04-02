@@ -1,64 +1,55 @@
-import numpy as np
-import tensorflow as tf
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import LSTM, Dense, Embedding, SpatialDropout1D
-from tensorflow.keras.preprocessing.text import Tokenizer
-from tensorflow.keras.preprocessing.sequence import pad_sequences
-import nltk
-from sklearn.preprocessing import LabelEncoder
 import json
+import re
+import random
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 
-nltk.download('punkt')
-
-# read file
-with open("C:\python\python\AI\intents.json", 'r') as file:
+# Read the intents file
+with open("C:\\python\\AI\\intents.json", 'r') as file:
     data = json.load(file)
 
-# separate QA
+# Extract questions and responses
 questions = []
-responses = []
+responses = {}
+
+# Process the data
 for intent in data["intents"]:
     questions.append(intent["question"])
-    responses.append(intent["response"])
+    responses[intent["question"]] = intent["response"]
 
-# tokenization (spliting the data)
-tokenizer = Tokenizer()
-tokenizer.fit_on_texts(questions)
-X = tokenizer.texts_to_sequences(questions)
-max_len = max([len(x) for x in X])
+# Create a TF-IDF vectorizer
+vectorizer = TfidfVectorizer(
+    tokenizer=lambda x: re.findall(r'\w+', x.lower()),
+    stop_words='english'
+)
 
-# pad sequence (checks the len of the sentance)
-X = pad_sequences(X, maxlen=max_len, padding='post')
+# Fit the vectorizer on the questions
+question_vectors = vectorizer.fit_transform(questions)
 
-# ecoding
-label_encoder = LabelEncoder()
-y = label_encoder.fit_transform(responses)
-y = np.array(y)
 
-# Define the LSTM model architecture
-model = Sequential()
-model.add(Embedding(input_dim=len(tokenizer.word_index) + 1, output_dim=64, input_length=max_len))
-model.add(SpatialDropout1D(0.2))
-model.add(LSTM(100, dropout=0.2, recurrent_dropout=0.2))
-model.add(Dense(len(np.unique(y)), activation='softmax'))
+def get_response(user_input):
+    # Vectorize the user input
+    user_vector = vectorizer.transform([user_input.lower()])
 
-# Compile the model
-model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+    # Calculate similarity with all questions
+    similarities = cosine_similarity(user_vector, question_vectors)[0]
 
-# Train the model
-model.fit(X, y, epochs=500, batch_size=16)
+    # Find the most similar question
+    best_match_index = similarities.argmax()
+    best_match_score = similarities[best_match_index]
 
-# Function for response
-def respond(input_text):
-    input_seq = tokenizer.texts_to_sequences([input_text])
-    input_seq = pad_sequences(input_seq, maxlen=max_len, padding='post')
-    prediction = model.predict(input_seq)
-    predicted_class = np.argmax(prediction, axis=1)[0]
-    response = label_encoder.inverse_transform([predicted_class])
+    # If the similarity is too low, return a default response
+    if best_match_score < 0.3:
+        return "I'm not sure I understand. Could you rephrase that?"
 
-    return response[0]
+    # Return the response for the most similar question
+    best_match_question = questions[best_match_index]
+    return responses[best_match_question]
 
-print("Hello! How can I assist you with?")
+
+# Interactive chat loop
+print("Chatbot initialized. Type 'bye' to exit.")
+print("Hello! How can I assist you?")
 
 while True:
     user_input = input("You: ")
@@ -66,91 +57,9 @@ while True:
         print("Bot: Goodbye!")
         break
     else:
-        response = respond(user_input)
-        print(f"Bot: {response}")
-
-
-#
-# import mysql.connector
-# import spacy
-# from transformers import pipeline
-#
-# # Load NLP model for entity recognition
-# nlp = spacy.load("en_core_web_sm")
-# qa_pipeline = pipeline("question-answering", model="distilbert-base-uncased")
-#
-# # Connect to MySQL database
-# db = mysql.connector.connect(
-#     host="localhost",
-#     user="root",
-#     password="root",
-#     database="printer_management"
-# )
-#
-# cursor = db.cursor()
-#
-#
-# def extract_entities(user_input):
-#     """ Extracts relevant entities from the user's input """
-#     doc = nlp(user_input)
-#     entities = [ent.text for ent in doc.ents]
-#     return entities
-#
-#
-# def get_printer_details(printer_name):
-#     conn = mysql.connector.connect(
-#         host="localhost",
-#         user="root",
-#         password="password",
-#         database="printers_db"
-#     )
-#     cursor = conn.cursor()
-#
-#     # Ensure you're using the correct column name
-#     query = "SELECT printer_name, status FROM printers WHERE printer_name LIKE %s"
-#     cursor.execute(query, (f"%{printer_name}%",))
-#
-#     result = cursor.fetchone()
-#     conn.close()
-#
-#     if result:
-#         return f"Printer: {result[0]}, Status: {result[1]}"
-#     else:
-#         return "Printer not found."
-#
-#
-# def chatbot():
-#     print("Chatbot: Hello! Ask me about printers. Type 'exit' to quit.")
-#
-#     while True:
-#         user_input = input("You: ")
-#         if user_input.lower() == "exit":
-#             print("Chatbot: Goodbye!")
-#             break
-#
-#         # Extract key entities
-#         entities = extract_entities(user_input)
-#         if entities:
-#             printer_name = entities[0]  # Assume first entity is the printer name
-#             details = get_printer_details(printer_name)
-#
-#             if details:
-#                 response_text = f"Printer Details:\n"
-#                 for name, model, status in details:
-#                     response_text += f"- {name} (Model: {model}, Status: {status})\n"
-#             else:
-#                 response_text = "Sorry, no details found for that printer."
-#
-#         else:
-#             response_text = "Could you clarify which printer you're asking about?"
-#
-#         # Make response more conversational using Hugging Face
-#         response = qa_pipeline({
-#             "question": user_input,
-#             "context": response_text
-#         })
-#
-#         print(f"Chatbot: {response['answer']}")
-#
-#
-# chatbot()
+        try:
+            response = get_response(user_input)
+            print(f"Bot: {response}")
+        except Exception as e:
+            print(f"Error: {e}")
+            print("Bot: I'm having trouble understanding. Could you try again?")
